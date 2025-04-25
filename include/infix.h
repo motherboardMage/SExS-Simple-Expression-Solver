@@ -1,12 +1,12 @@
 #ifndef INFIX_H
 #define INFIX_H
 
-enum precedence {
-    ROUND_BRACKET,
-    EXPONENT,
-    MULTIPLY_DIVIDE,
-    ADD_SUBTRACT,
-};
+extern char symArr[8];
 
-extern calculateInfix(char *eqn);
-#endif INFIX_H
+int isNum(char ch);
+int precedence(char sym);
+int calculate();
+char isOperand(char ch);
+extern int solveInfix();
+
+#endif

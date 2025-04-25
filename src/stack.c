@@ -1,32 +1,90 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../include/stack.h"
+#include "../include/globals.h"
 
-void push(int data)
+int isEmpty(char type)
 {
-    stackNode *newNode = (stackNode*)calloc(1, sizeof(stackNode));
-    newNode->data = data;
-
-    if(topNode == NULL)
+    switch (type)
     {
-        topNode = newNode;
-        newNode->prev = NULL;
+    case 'N':
+        return topNum == -1;
+    case 'S':
+        return topSym == -1;
+    default:
+        printf("Error! Invalid type\n");
+        return 1;
     }
-
-    newNode->prev = topNode;
-    topNode = newNode;
 }
 
-int pop()
+int isFull(char type)
 {
-    // Add empty stack safety where it will be called
-    int ret = topNode->data;
-    stackNode *temp = (stackNode*)malloc(sizeof(stackNode));
-    temp = topNode;
-    
-    topNode = topNode->prev;
-    free(temp);
-    temp = NULL;
+    switch (type)
+    {
+    case 'N':
+        return topNum == ((4 * MAX_LEN) / 5) - 1;
+    case 'S':
+        return topSym == ((MAX_LEN / 5) - 1);
+    default:
+        printf("Error! Incorrect type\n");
+        return -1;
+    }
+}
 
-    return ret;
+void push(double data, char type)
+{
+    switch (type)
+    {
+    case 'N':
+        if (!isFull('N'))
+        {
+            topNum++;
+            numStack[topNum] = data;
+        }
+        else
+        {
+            printf("Error! Number stack full\n");
+        }
+        break;
+    case 'S':
+        if (!isFull('S'))
+        {
+            topSym++;
+            symStack[topSym] = (int)data;
+        }
+        else
+        {
+            printf("Error! Symbol stack full\n");
+        }
+        break;
+    default:
+        printf("Error! Invalid token type!\n");
+        return;
+    }
+}
+
+double pop(char type)
+{
+    if (isEmpty(type))
+    {
+        printf("Error! Stack is empty!\n");
+        return -1.0;
+    }
+    double val;
+    switch (type)
+    {
+    case 'N':
+        val = numStack[topNum];
+        numStack[topNum] = -1.0;
+        topNum--;
+        return val;
+    case 'S':
+        val = symStack[topSym];
+        symStack[topSym] = 0;
+        topSym--;
+        return val;
+    default:
+        printf("Error! Invalid token type!\n");
+        return -1.0;
+    }
 }

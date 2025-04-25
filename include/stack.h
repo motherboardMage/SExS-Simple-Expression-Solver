@@ -1,16 +1,14 @@
 #ifndef STACK_H
 #define STACK_H
 
-typedef struct {
-    float data;
-    struct stackNode *prev;
-}stackNode;
+extern double *numStack;
+extern int *symStack;
+extern int topNum;
+extern int topSym;
 
-stackNode *topNode;
+void push(double data, char type);
+double pop(char type);
+int isEmpty(char type);
+int isFull(char type);
 
-void push(int data);
-int pop();
-int top();
-int isEmpty();
-
-#endif STACK_H
+#endif
