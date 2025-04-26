@@ -3,13 +3,14 @@
 #include "../include/stack.h"
 #include "../include/globals.h"
 
+// Returns 1 if the stack of given type is empty, 0 otherwise
 int isEmpty(char type)
 {
     switch (type)
     {
-    case 'N':
+    case 'N': // Number stack
         return topNum == -1;
-    case 'S':
+    case 'S': // Symbol stack
         return topSym == -1;
     default:
         printf("Error! Invalid type\n");
@@ -17,25 +18,27 @@ int isEmpty(char type)
     }
 }
 
+// Returns 1 if the stack of given type is full, 0 otherwise
 int isFull(char type)
 {
     switch (type)
     {
-    case 'N':
-        return topNum == ((4 * MAX_LEN) / 5) - 1;
-    case 'S':
-        return topSym == ((MAX_LEN / 5) - 1);
+    case 'N': // Number stack
+        return topNum == MAX_LEN - 1;
+    case 'S': // Symbol stack
+        return topSym == MAX_LEN - 1;
     default:
         printf("Error! Incorrect type\n");
         return -1;
     }
 }
 
+// Pushes a value onto the number or symbol stack depending on type
 void push(double data, char type)
 {
     switch (type)
     {
-    case 'N':
+    case 'N': // Push to number stack
         if (!isFull('N'))
         {
             topNum++;
@@ -46,7 +49,7 @@ void push(double data, char type)
             printf("Error! Number stack full\n");
         }
         break;
-    case 'S':
+    case 'S': // Push to symbol stack (cast double to int for char storage)
         if (!isFull('S'))
         {
             topSym++;
@@ -63,6 +66,8 @@ void push(double data, char type)
     }
 }
 
+// Pops a value from the number or symbol stack depending on type
+// For symbol stack, returns the ASCII value as double
 double pop(char type)
 {
     if (isEmpty(type))
@@ -73,14 +78,14 @@ double pop(char type)
     double val;
     switch (type)
     {
-    case 'N':
+    case 'N': // Pop from number stack
         val = numStack[topNum];
-        numStack[topNum] = -1.0;
+        numStack[topNum] = -1.0; // Optional: reset slot
         topNum--;
         return val;
-    case 'S':
+    case 'S': // Pop from symbol stack (returns ASCII value as double)
         val = symStack[topSym];
-        symStack[topSym] = 0;
+        symStack[topSym] = 0; // Optional: reset slot
         topSym--;
         return val;
     default:

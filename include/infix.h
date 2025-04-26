@@ -1,6 +1,7 @@
 #ifndef INFIX_H
 #define INFIX_H
 
+// Infix evaluation helpers and declarations
 extern char symArr[8];
 
 int isNum(char ch);

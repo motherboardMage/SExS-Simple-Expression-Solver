@@ -2,8 +2,11 @@
 #include "../include/stack.h"
 #include "../include/infix.h"
 
-double *numStack = NULL;
-int *symStack = NULL;
-int topNum = -1;
-int topSym = -1;
+// Global stack pointers and indices
+double *numStack = NULL; // Number stack (doubles)
+int *symStack = NULL;    // Symbol stack (stores ASCII values of operators)
+int topNum = -1;         // Top index for number stack
+int topSym = -1;         // Top index for symbol stack
+
+// Operator array for precedence lookup
 char symArr[8] = {'(', '{', '[', '^', '*', '/', '+', '-'};

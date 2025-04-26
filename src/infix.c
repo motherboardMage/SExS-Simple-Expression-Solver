@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 #include "../include/stack.h"
 #include "../include/infix.h"
 #include "../include/globals.h"
 
+// Returns the precedence index of an operator in symArr, or -1 if not found
 int precedence(char sym)
 {
     for(int i = 0; i < 8; i++)
@@ -15,20 +17,24 @@ int precedence(char sym)
     return -1;
 }
 
+// Returns 1 if ch is a digit, 0 otherwise
 int isNum(char ch)
 {
     return (ch >= '0' && ch <= '9');
 }
 
+// Returns 1 if the operator is right-associative (currently only '^')
 int isRightAssociative(char op) {
     return op == '^';
 }
 
+// Pops two numbers and one operator, performs the operation, and pushes the result
 int calculate()
 {
     double a, b, res;
     b = pop('N');
     a = pop('N');
+    // symStack[topSym] holds the ASCII value of the operator
     switch ((int)symStack[topSym])
     {
     case '^':
@@ -54,18 +60,23 @@ int calculate()
                "--------------------------------------------------\n");
         return -1;
     }
-    pop('S'); // Always pop the operator after calculation
+    pop('S'); // Remove the operator after calculation
     push(res, 'N');
     return 0;
 }
 
+// Parses and evaluates an infix expression from user input
 int solveInfix()
 {
-    int num = 0;
-    int chp;
+    int num = 0, chp;
     char *exp = (char*)calloc(MAX_LEN, sizeof(char));
-    printf("Enter the infix expression: \n");
+    printf("Enter the expression: \n");
     fgets(exp, MAX_LEN, stdin);
+
+    // Remove trailing newline from input expression, if present
+    size_t len = strlen(exp);
+    if (len > 0 && exp[len - 1] == '\n') exp[len - 1] = '\0';
+
     char *ch = exp;
 
     while(*ch != '\0' && *ch != '\n')
@@ -73,6 +84,7 @@ int solveInfix()
         if(isNum(*ch))
         {
             num = 0;
+            // Parse multi-digit integer
             while(isNum(*ch))
             {
                 num = num * 10 + (*ch - '0');
@@ -94,6 +106,7 @@ int solveInfix()
                 free(exp);
                 return -1;
             }
+            // Pop and calculate while stack top has higher or equal precedence (left-associative)
             while(!isEmpty('S')) {
                 int topOp = symStack[topSym];
                 int tsp = precedence(topOp);
@@ -107,11 +120,12 @@ int solveInfix()
                     break;
                 }
             }
+            // Push operator as its ASCII value
             push((double)(*ch), 'S');
             ch++;
         }
     }
-    // Process remaining operators
+    // Process any remaining operators
     while(!isEmpty('S'))
     {
         if(calculate() == -1)
@@ -120,7 +134,7 @@ int solveInfix()
             return -1;
         }
     }
-    printf("%s = %lf\n", exp, numStack[0]);
+    printf("%s = %.10g\n\n", exp, numStack[0]);
     free(exp);
     return 1;
 }
