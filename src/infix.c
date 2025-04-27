@@ -7,14 +7,14 @@
 #include "../include/globals.h"
 
 // Returns the precedence index of an operator in symArr, or -1 if not found
-int precedence(char sym)
-{
-    for(int i = 0; i < 8; i++)
-    {
-        if(sym == symArr[i])
-            return i;
+int precedence(char op) {
+    switch(op) {
+        case '+':
+        case '-': return 2;
+        case '*':
+        case '/': return 1;
+        default: return -1;
     }
-    return -1;
 }
 
 // Returns 1 if ch is a digit, 0 otherwise
@@ -106,13 +106,15 @@ int solveInfix()
                 free(exp);
                 return -1;
             }
-            // Pop and calculate while stack top has higher or equal precedence (left-associative)
-            while(!isEmpty('S')) {
+            // Fix: For correct precedence, pop while (tsp <= chp) or (tsp == chp and not right-associative)
+            while (!isEmpty('S')) {
                 int topOp = symStack[topSym];
                 int tsp = precedence(topOp);
-                if (tsp < chp || (tsp == chp && !isRightAssociative((char)topOp))) {
-                    if(calculate() == -1)
-                    {
+                // Pop while stack top has higher or equal precedence (for left-associative)
+                // For right-associative, only pop if stack top has higher precedence
+                if ((tsp <= chp && !isRightAssociative((char)topOp)) ||
+                    (tsp < chp && isRightAssociative((char)topOp))) {
+                    if (calculate() == -1) {
                         free(exp);
                         return -1;
                     }
