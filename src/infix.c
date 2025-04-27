@@ -29,7 +29,7 @@ int isRightAssociative(char op) {
 }
 
 // Pops two numbers and one operator, performs the operation, and pushes the result
-int calculate()
+double calculate()
 {
     double a, b, res;
     b = pop('N');
@@ -68,7 +68,7 @@ int calculate()
 // Parses and evaluates an infix expression from user input
 int solveInfix()
 {
-    int num = 0, chp;
+    double num = 0, chp;
     char *exp = (char*)calloc(MAX_LEN, sizeof(char));
     printf("Enter the expression: \n");
     fgets(exp, MAX_LEN, stdin);
@@ -81,13 +81,23 @@ int solveInfix()
 
     while(*ch != '\0' && *ch != '\n')
     {
-        if(isNum(*ch))
+        if(isNum(*ch) || *ch == '.')
         {
             num = 0;
-            // Parse multi-digit integer
+            // Parse integer part
             while(isNum(*ch))
             {
                 num = num * 10 + (*ch - '0');
+                ch++;
+            }
+
+            // Parse fractional part, if present
+            ch++;
+            double divisor = 10.0;
+            while(isNum(*ch))
+            {
+                num += (*ch - '0') / divisor;
+                divisor *= 10.0;
                 ch++;
             }
             push((double)num, 'N');

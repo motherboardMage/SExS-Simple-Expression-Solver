@@ -3,7 +3,7 @@
 
 int isNum(char ch);
 int precedence(char sym);
-int calculate();
+double calculate();
 char isOperand(char ch);
 extern int solveInfix();
 
